@@ -26,4 +26,6 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('usuarios/{id}', 'UsuarioController@getOne')->name('getOneusuarios');
 	Route::post('usuarios/{id}', 'UsuarioController@edit')->name('editUsuarios');
 	Route::get('usuarios/delete/{id}', 'UsuarioController@delete')->name('deleteUsuarios');
+
+	Route::post('dtes', 'DteController@postAdd')->name('postDtes');
 });

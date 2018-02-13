@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($request->is('api/*')) {
-            if($exception->getStatusCode()==401) {
+            if($exception->getStatusCode()==401){
                 return response()->json([
                     "error" => "Token not provided or Could not decode token"],
                     401
