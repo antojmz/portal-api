@@ -17,7 +17,6 @@ class UsuarioController extends Controller
     }
     
     public function getAll(){
-        log::info("Entre al controlador");
         try{
         	$result = Api::all();
             return $result;

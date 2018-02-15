@@ -29,9 +29,16 @@ class DteController extends Controller
 
     public function postAdd(Request $request){
         $datos = $request->all();   
-    	$model= new Dte();
+        $model= new Dte();
         $result = $model->regDtes($datos);
-    	return $result;
+        return $result;
+    }
+
+    public function postUpdate(Request $request){
+        $datos = $request->all();   
+        $model= new Dte();
+        $result = $model->updateDtes($datos);
+        return $result;
     }
 
     // public function getOne($id){

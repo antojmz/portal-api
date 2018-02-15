@@ -28,4 +28,5 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 	Route::get('usuarios/delete/{id}', 'UsuarioController@delete')->name('deleteUsuarios');
 
 	Route::post('dtes', 'DteController@postAdd')->name('postDtes');
+	Route::post('dtes_update', 'DteController@postUpdate')->name('dtes_update');
 });

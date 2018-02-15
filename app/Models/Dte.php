@@ -55,7 +55,6 @@ class Dte extends Authenticatable {
         $result = [];
         $count = 1;
         $idUser = Auth::id();
-
         foreach ($datos as $key => $value) {    
             try {
                 $sql= "select f_registro_dtes_api(0, ";
@@ -90,25 +89,93 @@ class Dte extends Authenticatable {
                 $value['FechaVencimiento'] == null ? $sql.="null," : $sql.= "'".$value['FechaVencimiento']."',";
                 $value['TipoAcuse'] == null ? $sql.="null," : $sql.= $value['TipoAcuse'].",";
                 $value['ExistenciaSII'] == null ? $sql.="null," : $sql.= $value['ExistenciaSII'].",";
-                $value['ExistenciaPaperles'] == null ? $sql.="null," : $sql.= $value['TipoAcuse'].",";
+                $value['ExistenciaPaperles'] == null ? $sql.="null," : $sql.= $value['ExistenciaPaperles'].",";
                 $sql .=$idUser.");";
                 $execute=DB::select($sql);
                 foreach ($execute[0] as $key => $value) { $res=$value; }
                 $res = json_decode($res,true);
-                $json['IdDte']=$res['IdDte'];
-                $json['code']=$res['code'];
-                $json['status']=$res['status'];
-                $respuesta = json_encode($json);
-                $result[$count] = $respuesta;
+                $result[$count]['code']=$res['code'];
+                $result[$count]['status']=$res['status'];
+                $result[$count]['IdDte']=$res['IdDte'];
+                // $respuesta = json_encode($json);
+                // $result[$count] = $respuesta;
                 $count++;
             }catch (Exception $e) {
-                $json['code']="500";
-                $json['status']=$e->getMessage();
-                $respuesta = json_encode($json);
-                $result[$count] = $respuesta;
+                $result[$count]['code']="500";
+                $result[$count]['status']=$e->getMessage();
+                // $respuesta = json_encode($json);
+                // $result[$count] = $respuesta;
             }
         }
         return $result;
     }
-    
+
+    public function updateDtes($datos){
+        $result = [];
+        $count = 1;
+        $idUser = Auth::id();
+        foreach ($datos as $key => $value) {
+            try {
+            if (isset($value['IdDTE'])){
+                if ($value['IdDTE'] <>null){
+                    $IdDTE = $value['IdDTE'];
+                    unset($value['IdDTE']);
+                    $var="";
+                    if (isset($value['TipoDTE'])){$var.= "TipoDTE=".$value['TipoDTE'].",";}
+                    if (isset($value['FolioDTE'])){$var.= "FolioDTE='".$value['FolioDTE']."',";}
+                    if (isset($value['FechaRecepcion'])){$var.= "FechaRecepcion='".$value['FechaRecepcion']."',";}
+                    if (isset($value['FechaEmision'])){$var.= "FechaEmision='".$value['FechaEmision']."',";}
+                    if (isset($value['FechaRecepcionSII'])){$var.= "FechaRecepcionSII='".$value['FechaRecepcionSII']."',";}
+                    if (isset($value['IdProveedor'])){$var.= "IdProveedor=".$value['IdProveedor'].",";}                
+                    if (isset($value['RUTEmisor'])){$var.= "RUTEmisor='".$value['RUTEmisor']."',";}
+                    if (isset($value['IdCliente'])){$var.= "IdCliente=".$value['IdCliente'].",";}                
+                    if (isset($value['RUTReceptor'])){$var.= "RUTReceptor='".$value['RUTReceptor']."',";}
+                    if (isset($value['MontoNetoCLP'])){$var.= "MontoNetoCLP=".$value['MontoNetoCLP'].",";}                
+                    if (isset($value['MontoExentoCLP'])){$var.= "MontoExentoCLP=".$value['MontoExentoCLP'].",";}
+                    if (isset($value['MontoIVACLP'])){$var.= "MontoIVACLP=".$value['MontoIVACLP'].",";}
+                    if (isset($value['MontoTotalCLP'])){$var.= "MontoTotalCLP=".$value['MontoTotalCLP'].",";}
+                    if (isset($value['MontoNetoOM'])){$var.= "MontoNetoOM".$value['MontoNetoOM'].",";}
+                    if (isset($value['MontoExentoOM'])){$var.= "MontoExentoOM=".$value['MontoExentoOM'].",";}
+                    if (isset($value['MontoIVAOM'])){$var.= "MontoIVAOM=".$value['MontoIVAOM'].",";}
+                    if (isset($value['MontoTotalOM'])){$var.= "MontoTotalOM=".$value['MontoTotalOM'].",";}    
+                    if (isset($value['EstadoDTECliente'])){$var.= "EstadoDTECliente='".$value['EstadoDTECliente']."',";} 
+                    if (isset($value['EstadoDTESII'])){$var.= "EstadoDTESII='".$value['EstadoDTESII']."',";} 
+                    if (isset($value['EstadoPagoDTE'])){$var.= "EstadoPagoDTE='".$value['EstadoPagoDTE']."',";}  
+                    if (isset($value['EntradaMercaderia'])){$var.= "EntradaMercaderia='".$value['EntradaMercaderia']."',";}
+                    if (isset($value['PdfDTE'])){$var.= "PdfDTE='".$value['PdfDTE']."',";}
+                    if (isset($value['XmlDTE'])){$var.= "XmlDTE='".$value['XmlDTE']."',";}
+                    if (isset($value['FechaAutorizacionSII'])){$var.= "FechaAutorizacionSII='".$value['FechaAutorizacionSII']."',";}
+                    if (isset($value['FechaOC'])){$var.= "FechaOC='".$value['FechaOC']."',";}    
+                    if (isset($value['FechaPago'])){$var.= "FechaPago='".$value['FechaPago']."',";}
+                    if (isset($value['FechaVencimiento'])){$var.= "FechaVencimiento='".$value['FechaVencimiento']."',";}
+                    if (isset($value['TipoAcuse'])){$var.= "TipoAcuse=".$value['TipoAcuse'].",";}
+                    if (isset($value['ExistenciaSII'])){$var.= "ExistenciaSII=".$value['ExistenciaSII'].",";}
+                    $sql = 'call f_actualizacion_dte('.$IdDTE.',"'.$var.'",'.$idUser.',@sqlupdate);';
+                    $execute=DB::select($sql);
+                    $var = DB::select("select @sqlupdate;");
+                    foreach ($var[0] as $key => $value) {$res=$value;}
+                    $res = json_decode($res,true);
+                    $result[$count]['code']=$res['code'];
+                    $result[$count]['status']=$res['status'];
+                    $result[$count]['IdDte']=$res['IdDte'];
+                    // $respuesta = json_encode($json);
+                    // $result[$count] = $respuesta;
+                }else{
+                    $result[$count]['code']="500";
+                    $result[$count]['status']="Indefinido index idDte";
+                }
+            }else{
+                $result[$count]['code']="500";
+                $result[$count]['status']="Indefinido index idDte";
+            }
+        $count++;
+        }catch (Exception $e) {
+                $result[$count]['code']="500";
+                $result[$count]['status']=$e->getMessage();
+                // $respuesta = json_encode($json);
+                // $result[$count] = $respuesta;
+            }
+        }
+        return $result;
+    } 
 }
